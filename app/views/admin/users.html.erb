@@ -1,0 +1,194 @@
+<div class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="fas fa-users me-2"></i>Manage Users</h1>
+      <div>
+        <%= link_to "Dashboard", admin_dashboard_path, class: "btn btn-outline-secondary" %>
+        <%= link_to "View Orders", admin_orders_path, class: "btn btn-outline-primary" %>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-user-plus me-2"></i>Create Accounts (Admin Only)</h4>
+        <p class="text-muted">
+          Public signups allow one account per CNIC and phone number. From the admin panel you can provision up to
+          <strong>five</strong> phone numbers for the same CNIC. Use this form to register those accounts.
+        </p>
+
+        <% if @new_user.errors.any? %>
+          <div class="alert alert-danger">
+            <p class="mb-1 fw-semibold">Please fix the following:</p>
+            <ul class="mb-0">
+              <% @new_user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= form_with model: @new_user, url: admin_create_user_path, local: true do |f| %>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <%= f.label :first_name, class: "form-label fw-semibold" %>
+              <%= f.text_field :first_name, class: "form-control", required: true %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :last_name, class: "form-label fw-semibold" %>
+              <%= f.text_field :last_name, class: "form-control", required: true %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :email, class: "form-label fw-semibold" %>
+              <%= f.email_field :email, class: "form-control", required: true %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :phone, class: "form-label fw-semibold" %>
+              <%= f.telephone_field :phone, class: "form-control", required: true, placeholder: "+923001234567" %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :cnic, class: "form-label fw-semibold" %>
+              <%= f.text_field :cnic, class: "form-control", maxlength: 13, minlength: 13, required: true, placeholder: "13-digit CNIC" %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :password, class: "form-label fw-semibold" %>
+              <%= f.password_field :password, class: "form-control", required: true, minlength: Devise.password_length.min %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :password_confirmation, class: "form-label fw-semibold" %>
+              <%= f.password_field :password_confirmation, class: "form-control", required: true %>
+            </div>
+          </div>
+          <div class="d-grid d-md-flex justify-content-md-end mt-4">
+            <%= f.submit "Create Account", class: "btn btn-primary px-4" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <% if @users.any? %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>CNIC</th>
+                  <th>Orders</th>
+                  <th>Total Spent</th>
+                  <th>Points</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @users.each do |user| %>
+                  <tr>
+                    <td>
+                      <strong><%= user.full_name %></strong>
+                      <% if user.admin? %>
+                        <br>
+                        <span class="badge bg-danger">Admin</span>
+                      <% end %>
+                    </td>
+                    <td><%= user.email %></td>
+                    <td>
+                      <% if user.phone.present? %>
+                        <%= user.phone %>
+                      <% else %>
+                        <span class="text-muted">Not provided</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% if user.cnic.present? %>
+                        <code><%= user.cnic %></code>
+                        <% if user.created_by_admin? %>
+                          <br>
+                          <small class="text-muted">Admin managed</small>
+                        <% end %>
+                      <% else %>
+                        <span class="text-muted">Not provided</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <span class="badge bg-primary"><%= user.orders.count %> orders</span>
+                    </td>
+                    <td>
+                      <strong>$<%= user.orders.sum(:total_amount) %></strong>
+                    </td>
+                    <td>
+                      <span class="badge bg-success"><%= user.points %></span>
+                    </td>
+                    <td>
+                      <% if user.admin? %>
+                        <span class="badge bg-danger">Admin</span>
+                      <% else %>
+                        <span class="badge bg-secondary">Customer</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= user.created_at.strftime("%m/%d/%Y") %>
+                      <br>
+                      <small class="text-muted"><%= time_ago_in_words(user.created_at) %> ago</small>
+                    </td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <%= link_to "View Orders", orders_path(user_id: user.id), class: "btn btn-sm btn-outline-primary" %>
+                        <%= link_to "Profile", edit_user_registration_path, class: "btn btn-sm btn-outline-secondary" %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- User Statistics -->
+          <div class="row mt-4">
+            <div class="col-md-3">
+              <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                  <h4><%= @users.count %></h4>
+                  <p class="mb-0">Total Users</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card bg-success text-white">
+                <div class="card-body text-center">
+              <h4><%= @users.where(admin: false).count %></h4>
+                  <p class="mb-0">Customers</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+              <h4><%= @users.where(admin: true).count %></h4>
+                  <p class="mb-0">Admins</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                  <h4><%= @users.joins(:orders).distinct.count %></h4>
+                  <p class="mb-0">Active Customers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="fas fa-users fa-5x text-muted mb-3"></i>
+            <h3>No users yet</h3>
+            <p class="text-muted">Users will appear here once they register.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

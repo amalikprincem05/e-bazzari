@@ -1,0 +1,192 @@
+<!-- Hero Section -->
+<div class="hero-section bg-primary text-white py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">Welcome to E-Bazzari</h1>
+        <p class="lead mb-4">Discover amazing products at unbeatable prices. Shop with confidence and enjoy fast delivery to your doorstep.</p>
+        <%= link_to "Shop Now", shop_path, class: "btn btn-light btn-lg" %>
+      </div>
+      <div class="col-lg-6">
+        <div class="text-center">
+          <i class="fas fa-shopping-bag" style="font-size: 8rem; opacity: 0.3;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Ads Slider -->
+<% if @ad_products.any? %>
+  <div class="bg-dark text-white py-4 featured-ads-bar">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <p class="text-uppercase text-warning small mb-1 fw-semibold">On Spotlight</p>
+          <h3 class="mb-0">Trending Ads</h3>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-light btn-sm" type="button" data-bs-target="#featuredAdsCarousel" data-bs-slide="prev">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="btn btn-outline-light btn-sm" type="button" data-bs-target="#featuredAdsCarousel" data-bs-slide="next">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="featuredAdsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+          <% @ad_products.each_with_index do |product, index| %>
+            <div class="carousel-item <%= 'active' if index.zero? %>">
+              <div class="row align-items-center g-4">
+                <div class="col-md-5">
+                  <div class="position-relative rounded overflow-hidden shadow-sm" style="min-height: 240px; background: rgba(255,255,255,0.05);">
+                    <% if product.image.attached? %>
+                      <%= image_tag product.image, class: "w-100 h-100", style: "object-fit: cover;" %>
+                    <% else %>
+                      <div class="d-flex align-items-center justify-content-center h-100">
+                        <i class="fas fa-ad fa-5x text-secondary"></i>
+                      </div>
+                    <% end %>
+                    <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 px-3 py-2 shadow">
+                      <i class="fas fa-star me-1"></i>
+                      <%= product.featured_badge.presence || "Featured" %>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-7">
+                  <p class="text-uppercase text-muted small mb-1">Sponsored Product</p>
+                  <h2 class="fw-bold mb-3"><%= product.name %></h2>
+                  <p class="text-white-50 mb-4"><%= truncate(product.description, length: 180) %></p>
+                  <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                    <span class="h3 mb-0 text-warning">$<%= product.price %></span>
+                    <span class="badge bg-success">Limited Offer</span>
+                  </div>
+                  <div class="d-flex flex-wrap gap-3">
+                    <%= link_to "Shop Now", product_path(product), class: "btn btn-warning text-dark px-4" %>
+                    <%= link_to "View Details", product_path(product), class: "btn btn-outline-light px-4" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Categories Section -->
+<% if @categories.any? %>
+  <div class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">Shop by Category</h2>
+      <div class="row">
+        <% @categories.each do |category| %>
+          <div class="col-md-3 mb-4">
+            <div class="card h-100 text-center">
+              <div class="card-body">
+                <i class="fas fa-tag fa-3x text-primary mb-3"></i>
+                <h5 class="card-title"><%= category.titleize %></h5>
+                <%= link_to "View Products", shop_path(category: category), class: "btn btn-outline-primary" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Featured Products Slider -->
+<% if @featured_products.any? %>
+  <div class="py-5 bg-light">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <div>
+          <p class="text-uppercase text-muted small mb-1 fw-semibold">Editors' Picks</p>
+          <h2 class="mb-0">Featured Products</h2>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-primary btn-sm" type="button" data-bs-target="#featuredProductsCarousel" data-bs-slide="prev">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="btn btn-outline-primary btn-sm" type="button" data-bs-target="#featuredProductsCarousel" data-bs-slide="next">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="featuredProductsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+          <% @featured_products.each_slice(3).with_index do |group, idx| %>
+            <div class="carousel-item <%= 'active' if idx.zero? %>">
+              <div class="row">
+                <% group.each do |product| %>
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                      <% if product.image.attached? %>
+                        <%= image_tag product.image, class: "card-img-top", style: "height: 200px; object-fit: cover;" %>
+                      <% else %>
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                          <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                      <% end %>
+                      <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <h5 class="card-title mb-0"><%= product.name %></h5>
+                          <span class="badge bg-warning text-dark">Hot</span>
+                        </div>
+                        <p class="card-text text-muted mb-3"><%= truncate(product.description, length: 110) %></p>
+                        <div class="mt-auto">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary mb-0">$<%= product.price %></span>
+                            <span class="badge bg-success">In Stock</span>
+                          </div>
+                          <div class="mt-3 d-flex gap-2">
+                            <%= link_to "View", product_path(product), class: "btn btn-primary btn-sm flex-fill" %>
+                            <% if user_signed_in? %>
+                              <%= button_to "Add", cart_items_path(product_id: product.id), method: :post, class: "btn btn-outline-primary btn-sm flex-fill", local: true %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <%= link_to "View All Products", shop_path, class: "btn btn-primary btn-lg" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Features Section -->
+<div class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 text-center mb-4">
+        <i class="fas fa-shipping-fast fa-3x text-primary mb-3"></i>
+        <h4>Fast Delivery</h4>
+        <p class="text-muted">Quick and reliable shipping to your doorstep</p>
+      </div>
+      <div class="col-md-4 text-center mb-4">
+        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+        <h4>Secure Payment</h4>
+        <p class="text-muted">Safe and secure payment processing</p>
+      </div>
+      <div class="col-md-4 text-center mb-4">
+        <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+        <h4>24/7 Support</h4>
+        <p class="text-muted">Round-the-clock customer support</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<%= form_with url: products_path, method: :get, local: true, class: "input-group shadow-sm rounded search-bar #{local_assigns[:classes]}", role: "search" do %>
+  <span class="input-group-text bg-white border-end-0">
+    <i class="fas fa-search text-muted"></i>
+  </span>
+  <%= text_field_tag :q,
+        params[:q],
+        class: "form-control border-start-0",
+        placeholder: "Search products in English or Urdu",
+        id: input_id,
+        "aria-label": "Search products",
+        data: { search_input: true } %>
+  <button class="btn btn-outline-secondary" type="button" data-voice-search="true" data-target="<%= "##{input_id}" %>" title="Search with Urdu voice">
+    <i class="fas fa-microphone"></i>
+  </button>
+  <button class="btn btn-primary" type="submit">
+    Search
+  </button>
+<% end %>
+

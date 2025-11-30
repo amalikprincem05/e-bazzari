@@ -1,0 +1,157 @@
+<div class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h1>
+      <div>
+        <%= link_to "Manage Products", admin_products_path, class: "btn btn-primary" %>
+        <%= link_to "View Orders", admin_orders_path, class: "btn btn-outline-primary" %>
+        <%= link_to "Manage Users", admin_users_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card bg-primary text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4><%= @total_products %></h4>
+                <p class="mb-0">Total Products</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-box fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="card bg-success text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4><%= @total_orders %></h4>
+                <p class="mb-0">Total Orders</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-shopping-bag fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="card bg-info text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4><%= @total_users %></h4>
+                <p class="mb-0">Total Users</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-users fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="card bg-warning text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4><%= @low_stock_products.count %></h4>
+                <p class="mb-0">Low Stock Items</p>
+              </div>
+              <div class="align-self-center">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Recent Orders -->
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-clock me-2"></i>Recent Orders</h5>
+          </div>
+          <div class="card-body">
+            <% if @recent_orders.any? %>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @recent_orders.each do |order| %>
+                      <tr>
+                        <td>#<%= order.id %></td>
+                        <td><%= order.user.full_name %></td>
+                        <td>$<%= order.total_amount %></td>
+                        <td>
+                          <span class="badge bg-<%= case order.status
+                            when 'pending' then 'warning'
+                            when 'paid' then 'success'
+                            when 'shipped' then 'info'
+                            when 'delivered' then 'success'
+                            when 'cancelled' then 'danger'
+                            else 'secondary'
+                          end %>">
+                            <%= order.status.titleize %>
+                          </span>
+                        </td>
+                        <td><%= order.created_at.strftime("%m/%d/%Y") %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            <% else %>
+              <p class="text-muted">No orders yet.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock Alert -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alert</h5>
+          </div>
+          <div class="card-body">
+            <% if @low_stock_products.any? %>
+              <% @low_stock_products.each do |product| %>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <strong><%= product.name %></strong>
+                    <br>
+                    <small class="text-muted">Stock: <%= product.stock_quantity %></small>
+                  </div>
+                  <%= link_to "Edit", admin_edit_product_path(product), class: "btn btn-sm btn-outline-primary" %>
+                </div>
+                <hr>
+              <% end %>
+            <% else %>
+              <p class="text-muted">All products are well stocked!</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

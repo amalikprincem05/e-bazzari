@@ -1,0 +1,90 @@
+<div class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- Category Filter -->
+        <div class="card">
+          <div class="card-header">
+            <h5>Categories</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <%= link_to "All Products", shop_path, class: "text-decoration-none #{'fw-bold text-primary' unless params[:category].present?}" %>
+              </li>
+              <% @categories.each do |category| %>
+                <li class="mb-2">
+                  <%= link_to category.titleize, shop_path(category: category), class: "text-decoration-none #{'fw-bold text-primary' if params[:category] == category}" %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2>
+            <% if params[:category].present? %>
+              <%= params[:category].titleize %> Products
+            <% else %>
+              All Products
+            <% end %>
+          </h2>
+          <span class="text-muted"><%= @products.total_count %> products found</span>
+        </div>
+        <% if @search_term.present? %>
+          <p class="text-muted fst-italic">Showing results for "<%= @search_term %>"</p>
+        <% end %>
+        
+        <% if @products.any? %>
+          <div class="row">
+            <% @products.each do |product| %>
+              <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                  <% if product.image.attached? %>
+                    <%= image_tag product.image, class: "card-img-top", style: "height: 200px; object-fit: cover;" %>
+                  <% else %>
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                      <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                  <% end %>
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title"><%= product.name %></h5>
+                    <p class="card-text text-muted"><%= truncate(product.description, length: 100) %></p>
+                    <div class="mt-auto">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="h5 text-primary">$<%= product.price %></span>
+                        <span class="badge bg-<%= product.available? ? 'success' : 'danger' %>">
+                          <%= product.available? ? 'In Stock' : 'Out of Stock' %>
+                        </span>
+                      </div>
+                      <div class="d-flex gap-2">
+                        <%= link_to "View Details", product_path(product), class: "btn btn-primary btn-sm flex-fill" %>
+                        <% if user_signed_in? && product.available? %>
+                          <%= button_to "Add to Cart", cart_items_path(product_id: product.id), method: :post, class: "btn btn-outline-primary btn-sm", local: true %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="d-flex justify-content-center">
+            <%= paginate @products %>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4>No products found</h4>
+            <p class="text-muted">Try adjusting your search criteria</p>
+            <%= link_to "View All Products", shop_path, class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

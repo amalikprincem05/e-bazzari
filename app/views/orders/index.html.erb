@@ -1,0 +1,49 @@
+<div class="py-5">
+  <div class="container">
+    <h1 class="mb-4">My Orders</h1>
+    
+    <% if @orders.any? %>
+      <div class="row">
+        <% @orders.each do |order| %>
+          <div class="col-lg-8 mx-auto mb-4">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-md-3">
+                    <h6 class="mb-1">Order #<%= order.id %></h6>
+                    <small class="text-muted"><%= order.created_at.strftime("%B %d, %Y") %></small>
+                  </div>
+                  <div class="col-md-3">
+                    <span class="badge bg-<%= case order.status
+                      when 'pending' then 'warning'
+                      when 'paid' then 'success'
+                      when 'shipped' then 'info'
+                      when 'delivered' then 'success'
+                      when 'cancelled' then 'danger'
+                      else 'secondary'
+                    end %>">
+                      <%= order.status.titleize %>
+                    </span>
+                  </div>
+                  <div class="col-md-3">
+                    <strong>$<%= order.total_amount %></strong>
+                  </div>
+                  <div class="col-md-3 text-end">
+                    <%= link_to "View Details", order_path(order), class: "btn btn-outline-primary btn-sm" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <i class="fas fa-shopping-bag fa-5x text-muted mb-3"></i>
+        <h3>No orders yet</h3>
+        <p class="text-muted">Start shopping to see your orders here!</p>
+        <%= link_to "Start Shopping", shop_path, class: "btn btn-primary btn-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>

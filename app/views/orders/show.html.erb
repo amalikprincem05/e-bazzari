@@ -1,0 +1,105 @@
+<div class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">Order #<%= @order.id %></h1>
+        
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Order Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Order Date:</strong> <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+                <p><strong>Status:</strong> 
+                  <span class="badge bg-<%= case @order.status
+                    when 'pending' then 'warning'
+                    when 'paid' then 'success'
+                    when 'shipped' then 'info'
+                    when 'delivered' then 'success'
+                    when 'cancelled' then 'danger'
+                    else 'secondary'
+                  end %>">
+                    <%= @order.status.titleize %>
+                  </span>
+                </p>
+                <% if current_user.admin? %>
+                  <p><strong>Customer:</strong> <%= @order.user.full_name %></p>
+                  <p><strong>Email:</strong> <%= @order.user.email %></p>
+                  <% if @order.user.phone.present? %>
+                    <p><strong>Phone:</strong> <%= @order.user.phone %></p>
+                  <% end %>
+                <% end %>
+              </div>
+              <div class="col-md-6">
+                <% if @order.points_used > 0 %>
+                  <p><strong>Subtotal:</strong> $<%= @order.total_amount %></p>
+                  <p class="text-success"><strong>Points Used:</strong> <%= @order.points_used %> points (-$<%= @order.points_used %>)</p>
+                  <p><strong>Amount Paid:</strong> $<%= @order.total_amount - @order.points_used %></p>
+                <% else %>
+                  <p><strong>Total Amount:</strong> $<%= @order.total_amount %></p>
+                <% end %>
+                <% if @order.stripe_payment_intent_id.present? %>
+                  <p><strong>Payment ID:</strong> <%= @order.stripe_payment_intent_id %></p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h5>Order Items</h5>
+          </div>
+          <div class="card-body">
+            <% @order.order_items.each do |item| %>
+              <div class="row align-items-center py-3 border-bottom">
+                <div class="col-md-2">
+                  <% if item.product.image.attached? %>
+                    <%= image_tag item.product.image, class: "img-fluid rounded", style: "height: 60px; object-fit: cover;" %>
+                  <% else %>
+                    <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 60px;">
+                      <i class="fas fa-image text-muted"></i>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="col-md-4">
+                  <h6 class="mb-1"><%= item.product.name %></h6>
+                  <small class="text-muted"><%= item.product.category.titleize %></small>
+                </div>
+                <div class="col-md-2">
+                  <span class="text-muted">Qty: <%= item.quantity %></span>
+                </div>
+                <div class="col-md-2">
+                  <span class="text-muted">$<%= item.unit_price %></span>
+                </div>
+                <div class="col-md-2">
+                  <span class="fw-bold">$<%= item.total_price %></span>
+                </div>
+              </div>
+            <% end %>
+            
+            <div class="row mt-3">
+              <div class="col-md-8"></div>
+              <div class="col-md-4">
+                <div class="d-flex justify-content-between">
+                  <strong>Total:</strong>
+                  <strong>$<%= @order.total_amount %></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <% if current_user.admin? %>
+            <%= link_to "← Back to Admin Orders", admin_orders_path, class: "btn btn-outline-secondary" %>
+          <% else %>
+            <%= link_to "← Back to Orders", orders_path, class: "btn btn-outline-secondary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

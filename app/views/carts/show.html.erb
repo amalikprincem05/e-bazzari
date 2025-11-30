@@ -1,0 +1,132 @@
+<div class="py-5">
+  <div class="container">
+    <h1 class="mb-4">Shopping Cart</h1>
+    
+    <% if @cart_items.any? %>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <% @cart_items.each do |item| %>
+                <div class="row align-items-center py-3 border-bottom">
+                  <div class="col-md-2">
+                    <% if item.product.image.attached? %>
+                      <%= image_tag item.product.image, class: "img-fluid rounded", style: "height: 80px; object-fit: cover;" %>
+                    <% else %>
+                      <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 80px;">
+                        <i class="fas fa-image text-muted"></i>
+                      </div>
+                    <% end %>
+                  </div>
+                  <div class="col-md-4">
+                    <h6 class="mb-1"><%= item.product.name %></h6>
+                    <small class="text-muted"><%= item.product.category.titleize %></small>
+                  </div>
+                  <div class="col-md-2">
+                    <span class="h6">$<%= item.product.price %></span>
+                  </div>
+                  <div class="col-md-2">
+                    <%= form_with model: item, url: cart_item_path(item), method: :patch, local: true, class: "d-flex" do |form| %>
+                      <%= form.number_field :quantity, value: item.quantity, min: 1, max: item.product.stock_quantity, class: "form-control form-control-sm" %>
+                      <%= form.submit "Update", class: "btn btn-sm btn-outline-primary ms-1" %>
+                    <% end %>
+                  </div>
+                  <div class="col-md-1">
+                    <span class="h6">$<%= item.total_price %></span>
+                  </div>
+                  <div class="col-md-1">
+                    <%= button_to cart_item_path(item), method: :delete, class: "btn btn-sm btn-outline-danger", 
+                        data: { confirm: "Remove this item?" } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0"><i class="fas fa-gift me-2"></i>Your Points</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="fw-bold">Current Points:</span>
+                <span class="badge bg-success fs-6"><%= current_user.points %></span>
+              </div>
+              <small class="text-muted">1 point = $1.00</small>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h5>Order Summary</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Subtotal:</span>
+                <span>$<%= @subtotal %></span>
+              </div>
+              
+              <% if current_user.points > 0 %>
+                <div class="mb-3">
+                  <%= form_with url: cart_path, method: :get, local: true, class: "mb-2" do |f| %>
+                    <div class="input-group input-group-sm">
+                      <%= f.number_field :points_to_use, 
+                          value: @points_to_use,
+                          min: 0, 
+                          max: [current_user.points, @subtotal.to_i].min,
+                          step: 1,
+                          class: "form-control",
+                          placeholder: "Points to use" %>
+                      <%= f.submit "Apply", class: "btn btn-outline-primary" %>
+                    </div>
+                    <small class="text-muted">Max: <%= [current_user.points, @subtotal.to_i].min %> points</small>
+                  <% end %>
+                  <% if @points_to_use > 0 %>
+                    <div class="d-flex justify-content-between mt-2 text-success">
+                      <span>Points Applied:</span>
+                      <span>-$<%= @points_to_use %></span>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span>Shipping:</span>
+                <span>Free</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between mb-3">
+                <strong>Total:</strong>
+                <strong>$<%= @total %></strong>
+              </div>
+              <%= form_with url: stripe_checkout_path, method: :post, local: true do |f| %>
+                <%= f.hidden_field :points_to_use, value: @points_to_use %>
+                <%= f.submit "Proceed to Checkout", class: "btn btn-primary btn-lg w-100" %>
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="mt-3">
+            <%= link_to "Continue Shopping", shop_path, class: "btn btn-outline-secondary w-100" %>
+          </div>
+          
+          <div class="mt-2">
+            <%= button_to "Clear Cart", cart_path, method: :delete, class: "btn btn-outline-danger w-100", 
+                data: { confirm: "Are you sure you want to clear your cart?" }, local: true %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <i class="fas fa-shopping-cart fa-5x text-muted mb-3"></i>
+        <h3>Your cart is empty</h3>
+        <p class="text-muted">Add some products to get started!</p>
+        <%= link_to "Start Shopping", shop_path, class: "btn btn-primary btn-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>

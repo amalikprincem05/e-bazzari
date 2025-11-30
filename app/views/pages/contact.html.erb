@@ -1,0 +1,140 @@
+<div class="py-5">
+  <div class="container">
+    <h1 class="text-center mb-5">Contact Us</h1>
+    
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="row mb-5">
+          <div class="col-md-4 text-center">
+            <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+            <h5>Address</h5>
+            <p class="text-muted">
+              123 Business Street<br>
+              City, State 12345<br>
+              Country
+            </p>
+          </div>
+          <div class="col-md-4 text-center">
+            <i class="fas fa-phone fa-3x text-primary mb-3"></i>
+            <h5>Phone</h5>
+            <p class="text-muted">
+              +1 (555) 123-4567<br>
+              Mon-Fri: 9AM-6PM
+            </p>
+          </div>
+          <div class="col-md-4 text-center">
+            <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+            <h5>Email</h5>
+            <p class="text-muted">
+              support@ebazzari.com<br>
+              info@ebazzari.com
+            </p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h4>Send us a Message</h4>
+          </div>
+          <div class="card-body">
+            <%= form_with url: "#", local: true, class: "needs-validation", novalidate: true do |form| %>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <%= form.label :name, "Full Name", class: "form-label" %>
+                  <%= form.text_field :name, class: "form-control", required: true %>
+                  <div class="invalid-feedback">
+                    Please provide your full name.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <%= form.label :email, "Email Address", class: "form-label" %>
+                  <%= form.email_field :email, class: "form-control", required: true %>
+                  <div class="invalid-feedback">
+                    Please provide a valid email address.
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <%= form.label :subject, "Subject", class: "form-label" %>
+                <%= form.text_field :subject, class: "form-control", required: true %>
+                <div class="invalid-feedback">
+                  Please provide a subject.
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <%= form.label :message, "Message", class: "form-label" %>
+                <%= form.text_area :message, class: "form-control", rows: 5, required: true %>
+                <div class="invalid-feedback">
+                  Please provide your message.
+                </div>
+              </div>
+              
+              <div class="text-center">
+                <%= form.submit "Send Message", class: "btn btn-primary btn-lg" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="mt-5">
+          <h4 class="text-center mb-4">Frequently Asked Questions</h4>
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                  How do I place an order?
+                </button>
+              </h2>
+              <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Simply browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in to complete your purchase.
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                  What payment methods do you accept?
+                </button>
+              </h2>
+              <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  We accept all major credit cards, PayPal, and other secure payment methods through our payment processor.
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                  How long does shipping take?
+                </button>
+              </h2>
+              <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Standard shipping typically takes 3-5 business days. Express shipping options are available for faster delivery.
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                  Can I return or exchange items?
+                </button>
+              </h2>
+              <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Yes, we offer a 30-day return policy for most items. Please contact our support team for return instructions.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
