@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'shop', to: 'products#index'
   get 'about', to: 'pages#about'
   get 'contact', to: 'pages#contact'
+  post 'contact', to: 'pages#submit_contact'
   
   resources :products, only: [:index, :show]
   resources :cart_items, only: [:create, :update, :destroy]
