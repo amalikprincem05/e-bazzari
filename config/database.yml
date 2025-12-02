@@ -80,6 +80,4 @@ test:
 #
 production:
   <<: *default
-  database: e_bazzari_production
-  username: e_bazzari
-  password: <%= ENV["E_BAZZARI_DATABASE_PASSWORD"] %>
+  url: <%= ENV["postgresql://e_bazzari_user:0qUQzPMrMgD98Fyaer2vEM7jvDgtpxYL@dpg-d4n91rruibrs7397ieog-a.oregon-postgres.render.com/e_bazzari"] %>
