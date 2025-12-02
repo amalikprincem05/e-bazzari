@@ -11,9 +11,10 @@
 
   <link rel="manifest" href="/manifest.json">
   
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.png">
-    <link rel="apple-touch-icon" type="image/png" href="/assets/logo.png">
+ <link rel="icon" type="image/png" sizes="32x32" href="<%= asset_path('logo.png') %>">
+<link rel="icon" type="image/png" sizes="16x16" href="<%= asset_path('logo.png') %>">
+<link rel="apple-touch-icon" href="<%= asset_path('logo.png') %>">
+
     <style>
       .voice-overlay {
         position: fixed;
@@ -60,7 +61,7 @@
       window.stripePublishableKey = '<%= ENV["STRIPE_PUBLISHABLE_KEY"] %>';
     </script>
     
-
+   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
   </head>
 
@@ -71,6 +72,7 @@
         <div class="d-flex align-items-center w-100 gap-3">
           <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2 fw-bold mb-0" do %>
             <%= image_tag "/assets/logo.png", alt: "ES Bazzari logo", height: 44, class: "object-fit-contain" %>
+
             <span>E-Bazzari</span>
           <% end %>
           <div class="flex-grow-1 d-none d-lg-block">
